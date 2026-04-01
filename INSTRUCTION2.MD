@@ -1,0 +1,11 @@
+Project details:
+- Project name: [NAME]
+- Purpose: [WHAT IT DOES]
+- Users: [TARGET USERS]
+- Stack: [TECH STACK]
+- Architecture: [SHORT ARCHITECTURE]
+- Important folders: [FOLDERS]
+- Commands: [DEV/BUILD/TEST COMMANDS]
+- Deployment: [WHERE/HOW DEPLOYED]
+- Current priority: [TOP PRIORITY]
+- Known constraints: [IMPORTANT RULES]
