@@ -1,0 +1,89 @@
+# Pre-Project Prompt — Claude Brain Hook
+
+> Paste this at the start of a new conversation, or save it as `CLAUDE.md` in your project root for Claude Code to read automatically.
+
+---
+
+## Context
+
+I maintain a persistent knowledge folder ("second brain") at:
+
+**`C:\Users\you\Desktop\Projects\claude-brain`**
+
+This folder is the source of truth for everything you should already know about how I work and what I'm building. Before answering, treat it as required reading — not optional reference.
+
+## Folder structure
+
+```
+claude-brain/
+├── 00-index.md            ← map of what's in the brain, read this first
+├── project-overview.md    ← what I'm building, stack, goals, non-goals
+├── architecture.md        ← services, data flow, where things live
+├── conventions.md         ← code style, naming, patterns I prefer
+├── known-bugs.md          ← symptom → root cause → fix, one per bug
+├── decisions.md           ← choices already made and why (don't re-litigate)
+├── glossary.md            ← internal acronyms, product names, jargon
+└── snippets/              ← reusable prompts, code templates, boilerplate
+```
+
+## How to use it
+
+**At the start of every session:**
+1. Read `00-index.md` to orient yourself
+2. Read `project-overview.md` and `conventions.md` in full
+3. Skim the other files so you know what's in them
+
+**During the conversation, consult specific files based on what I'm asking:**
+
+| If I ask about… | Read first |
+|---|---|
+| Debugging or "why is X broken" | `known-bugs.md` — check if it's already documented |
+| Writing new code | `conventions.md` + relevant section of `architecture.md` |
+| Architectural changes | `decisions.md` — don't suggest things I've already ruled out |
+| An unfamiliar term I use | `glossary.md` |
+| A repeated task | `snippets/` — there may already be a template |
+
+## Rules of engagement
+
+1. **Never ask me to re-explain something that's in the brain.** If you need context, read the file. If the file is empty or missing the info, say so explicitly and I'll add it.
+
+2. **If I tell you something new about the project, propose where it should live.** At the end of your response, add a section like:
+
+   > 📝 **Brain update suggested:** Add to `conventions.md` under "Error handling":
+   > "We wrap all DB calls in `withRetry()` — never call the driver directly."
+
+   I'll commit it manually so I stay in control of what gets persisted.
+
+3. **If two files contradict each other, flag it.** Don't silently pick one — tell me and let me resolve it.
+
+4. **If a file is stale or doesn't match what we're actually doing**, say so. The brain is only useful if it's accurate.
+
+5. **Decisions in `decisions.md` are binding.** Don't propose alternatives unless I explicitly ask to revisit a decision, or unless new information genuinely invalidates it (in which case, say so clearly).
+
+## How I want you to start
+
+When this prompt is loaded, your first response should be:
+
+1. A one-line confirmation you've read the brain (e.g. *"Brain loaded: working on [project name], stack is [X], [N] known bugs on file."*)
+2. Then answer my actual question.
+
+Don't dump the brain contents back at me — just prove you read it by being accurate and specific about my project from turn one.
+
+---
+
+## For Claude Code users
+
+If you're using Claude Code, save this file as `CLAUDE.md` in your project root, and additionally place these helper paths:
+
+- `~/.claude/CLAUDE.md` — personal preferences that apply to *every* project
+- `<repo>/CLAUDE.md` — this file, project-specific hook
+- `<repo>/claude-brain/` — the actual knowledge (or symlink to the central folder above)
+
+Claude Code reads `CLAUDE.md` automatically at session start, so the hook fires every time without you pasting anything.
+
+## For Claude.ai Projects users
+
+1. Create a Project
+2. Paste this entire prompt into the Project's **custom instructions**
+3. Upload the contents of `C:\Users\you\Desktop\Projects\claude-brain` into the Project's **knowledge** section
+4. Re-upload whenever you update the brain files (or sync periodically)
