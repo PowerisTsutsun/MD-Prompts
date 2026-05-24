@@ -1,0 +1,94 @@
+# Remote Access Check Commands
+
+Quick reference for checking if someone has remote access to your Windows PC.
+
+---
+
+## Network Connections
+
+**Check all active connections with PIDs**
+```cmd
+netstat -ano
+```
+Look for `ESTABLISHED` on ports: `3389` (RDP), `5900` (VNC), `22` (SSH).
+
+**Show executable name per connection (run as admin)**
+```cmd
+netstat -b
+```
+
+**Find the process behind a suspicious PID**
+```cmd
+tasklist | findstr <PID>
+```
+
+---
+
+## Sessions & Users
+
+**List all active sessions**
+```cmd
+query session
+```
+or
+```cmd
+qwinsta
+```
+
+**See who is currently logged in**
+```cmd
+query user
+```
+
+---
+
+## File Share Access
+
+**Check if anyone is accessing your shared folders**
+```cmd
+net session
+```
+Should be empty on a clean personal PC.
+
+---
+
+## Persistence & Firewall
+
+**Check scheduled tasks (look for suspicious entries)**
+```cmd
+schtasks /query /fo LIST /v | more
+```
+
+**Check if RDP is allowed through the firewall**
+```cmd
+netsh advfirewall firewall show rule name="Remote Desktop"
+```
+
+---
+
+## What to Look For
+
+- Foreign IPs in `netstat` with state `ESTABLISHED` on remote access ports
+- Unfamiliar processes attached to those connections
+- Extra sessions in `query session` like `rdp-tcp#0`
+- Any output at all from `net session`
+
+**Tip:** Drop any suspicious IPs into [abuseipdb.com](https://www.abuseipdb.com) to check if they are flagged.
+
+---
+
+## Clean Output Examples
+
+### query session
+```
+SESSIONNAME    USERNAME    ID   STATE    TYPE    DEVICE
+services                   0    Disc
+>console       revon        1    Active
+```
+Only `console` with your username and no `rdp-tcp` lines means no active remote session.
+
+### net session
+```
+There are no entries in the list.
+```
+This is what you want to see.
