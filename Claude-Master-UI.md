@@ -1,5 +1,9 @@
 # Claude-Master-UI
 
+npm install motion
+npx skills add pbakaus/impeccable
+uipro init --ai claude 
+
 Reusable bootstrap prompt for setting up an anti-slop UI environment in Claude Code, plus the standing ground rules I want enforced on every UI build.
 
 Paste this into a fresh Claude Code session, or hand it to a Claude that will be doing UI work for me.
