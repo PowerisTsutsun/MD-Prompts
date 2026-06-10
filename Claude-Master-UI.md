@@ -1,91 +1,45 @@
-# Claude-Master-UI
+# Claude-Master-UI v3
 
-`npm install motion`
-`npx skills add pbakaus/impeccable`
-`uipro init --ai claude`
+Bootstrap prompt for high-craft, motion-heavy UI builds in Claude Code.
 
-Reusable bootstrap prompt for setting up an anti-slop UI environment in Claude Code, plus the standing ground rules I want enforced on every UI build.
-
-Paste this into a fresh Claude Code session, or hand it to a Claude that will be doing UI work for me.
+**What changed from v2 and why:** v2 stacked four overlapping design skills (they average each other into generic output), enforced 50+ prohibitions with no positive direction (the model just picks the next-most-average design that breaks no rules), and assumed a reusable prompt could replace a project brief (it can't — specificity is the input, not the scaffolding). v3 fixes all three: a lean stack, a mandatory brief, named aesthetic directions you pick from, and a motion playbook that says what TO do.
 
 ---
 
-## What this installs
+## Part 1: Install (lean stack)
 
-Four skills (one base + three opinionated layers) and one MCP server.
-
-| # | Name | Source | Role |
-|---|---|---|---|
-| 1 | `frontend-design` | Anthropic official ([anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design)) | Base layer that the others build on |
-| 2 | `impeccable` | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Sub-commands: craft, shape, audit, critique, polish, harden, animate, distill, etc. |
-| 3 | `design-taste-frontend` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | "High-Agency Frontend" — DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY dials |
-| 4 | `ui-ux-pro-max` | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | 161-rule reasoning engine, design-system generator (requires Python 3) |
-| MCP | `playwright` | [@playwright/mcp](https://www.npmjs.com/package/@playwright/mcp) | Real-browser screenshots, multi-breakpoint verification + design scraping |
-
-> Skills 2, 3, and 4 are third-party. They're popular and active but not Anthropic-published — review the SKILL.md of each before using if that matters to you.
-
----
-
-## Install protocol
-
-Run these in order. Stop and report at any failure — do not improvise around an error.
-
-### 0. Preconditions
+Two skills, one MCP, one animation library. That's it.
 
 ```bash
-# Required tools — abort if any missing
-node --version          # 18+
-npm --version
+# Preconditions
+node --version    # 18+
 git --version
-python3 --version || python --version   # only needed for ui-ux-pro-max design-system generator
 ```
 
-### 1. Anthropic frontend-design (base layer)
+### 1. frontend-design (Anthropic official — the base layer)
 
 ```bash
-mkdir -p /tmp/skills-install
+mkdir -p /tmp/skills-install ~/.claude/skills
 git clone --depth 1 https://github.com/anthropics/skills /tmp/skills-install/anthropics-skills
 cp -r /tmp/skills-install/anthropics-skills/skills/frontend-design ~/.claude/skills/frontend-design
 ```
 
-### 2. impeccable
-
-The README's install path (`dist/claude-code/.claude/`) does not exist in the repo. Real path is `.claude/skills/impeccable/` at the repo root.
+### 2. impeccable (audit pass only)
 
 ```bash
 git clone --depth 1 https://github.com/pbakaus/impeccable /tmp/skills-install/impeccable
 cp -r /tmp/skills-install/impeccable/.claude/skills/impeccable ~/.claude/skills/impeccable
 ```
 
-### 3. design-taste-frontend (the "Taste" skill)
+> **Deliberately NOT installed:** `design-taste-frontend` and `ui-ux-pro-max`. Multiple skills with opinions about the same axes (type, spacing, motion) dilute each other in context. One strong base skill + one audit skill outperforms four talking over each other. If you want to experiment with the others, load them in a separate session, never alongside these.
 
-Use the Vercel Labs `skills` CLI. The skill's repo dir is named `taste-skill` but its frontmatter `name:` is `design-taste-frontend` — `-s` matches the frontmatter name, not the dir name.
+### 3. Playwright MCP
 
-```bash
-npx -y skills add Leonxlnx/taste-skill -g -a claude-code -s design-taste-frontend -y
-```
-
-To install the full set (9 code variants + 3 image-gen) instead, use `--all`. Default install is the main `design-taste-frontend` only.
-
-### 4. ui-ux-pro-max
-
-`uipro-cli init` is project-scoped only — no `--global` flag. Workaround: install to a staging dir, then move into `~/.claude/skills/`.
-
-```bash
-mkdir -p /tmp/uipro-stage
-cd /tmp/uipro-stage
-npx -y uipro-cli init --ai claude
-cp -r /tmp/uipro-stage/.claude/skills/* ~/.claude/skills/
-```
-
-### 5. Playwright MCP
-
-If `claude` CLI is on PATH:
 ```bash
 claude mcp add playwright npx @playwright/mcp@latest
 ```
 
-If `claude` CLI is **not** on PATH (typical on Windows + VSCode-extension-only setups), edit `~/.claude.json` directly. Add this top-level key (or merge into an existing `mcpServers`):
+If `claude` CLI isn't on PATH, add to `~/.claude.json`:
 
 ```json
 "mcpServers": {
@@ -96,388 +50,223 @@ If `claude` CLI is **not** on PATH (typical on Windows + VSCode-extension-only s
 }
 ```
 
-After editing, validate the JSON is still parseable:
-```bash
-node -e "JSON.parse(require('fs').readFileSync(require('os').homedir()+'/.claude.json','utf8'))" && echo OK
-```
+Validate: `node -e "JSON.parse(require('fs').readFileSync(require('os').homedir()+'/.claude.json','utf8'))" && echo OK`
 
-### 6. Cleanup + verify
+### 4. Per-project: animation library
 
 ```bash
-rm -rf /tmp/skills-install /tmp/uipro-stage
-ls ~/.claude/skills/
-# Expect: design-taste-frontend  frontend-design  impeccable  ui-ux-pro-max
+npm install motion        # Motion (Framer Motion successor) — React
+# or for vanilla/scroll-driven work:
+npm install gsap          # GSAP + ScrollTrigger
 ```
 
-### 7. Restart Claude Code
+Default: `motion` for React projects, GSAP when the project is vanilla JS or scroll-choreography-heavy.
 
-Skills register at startup. The MCP also initializes at startup. Restart the VSCode extension (or CLI) before relying on either.
+### 5. Cleanup, verify, restart
 
-After restart, confirm the Playwright MCP loaded by checking that tools prefixed `mcp__playwright__*` are available.
-
----
-
-## Design reference library (for $20k-quality output)
-
-Before building anything, scrape reference patterns from these sites using Playwright MCP. Don't build from memory or generic defaults — build from actual high-quality examples.
-
-### Tier 1: Premium component libraries (scrape 2-3 of these first)
-
-These have the highest design quality, best accessibility, and most thoughtful details.
-
-| Site | What to extract | Stack | Why |
-|------|----------------|-------|-----|
-| [ui.shadcn.com](https://ui.shadcn.com) | Component patterns, accessibility | React + Tailwind | Industry standard, Radix UI primitives |
-| [21st.dev](https://21st.dev) | Modern components, animations | React + Tailwind | Clean, premium feel, great motion |
-| [magicui.design](https://magicui.design) | Animated components, effects | React + Tailwind + Framer Motion | Best-in-class animations |
-| [originui.com](https://originui.com) | Clean component patterns | React + Tailwind | Minimal, production-ready |
-| [getjustd.com](https://getjustd.com) | Polished UI primitives | React + Tailwind | Modern, accessible patterns |
-
-### Tier 2: Design system references (for tokens and overall direction)
-
-Study these for typography, color, spacing systems, and brand cohesion.
-
-| Site | What to extract | Why |
-|------|----------------|-----|
-| [vercel.com/design](https://vercel.com/design) | Typography scale, spacing rhythm, Geist font system | Clean technical aesthetic, production quality |
-| [linear.app/method](https://linear.app/method) | Color system, micro-interactions, empty states | Best-in-class product design |
-| [stripe.com/docs](https://stripe.com/docs) | Documentation hierarchy, code examples, spacing | Gold standard for developer-facing UI |
-| [primer.style](https://primer.style) | GitHub design system, dark mode approach | Technical minimalism, open source quality |
-
-### Tier 3: Open source component collections (pick by aesthetic fit)
-
-| Site | Aesthetic | Stack | Best for |
-|------|-----------|-------|----------|
-| [ui.aceternity.com](https://ui.aceternity.com) | Premium motion, gradients | React + Tailwind + Framer Motion | Marketing sites, portfolios |
-| [cuicui.day](https://cuicui.day) | Modern, playful | React + Tailwind | Creative projects, fun interactions |
-| [kokonutui.com](https://kokonutui.com) | Clean, component-focused | React + Tailwind | Dashboard, SaaS UI |
-| [hextaui.com](https://hextaui.com) | Modern, animated | React + Tailwind | Portfolio, landing pages |
-| [ui.indie-starter.dev](https://ui.indie-starter.dev) | Indie hacker aesthetic | React + Tailwind | Startup landing pages |
-| [bundui.io](https://bundui.io) | Minimal, clean | React + Tailwind | Simple, focused UIs |
-| [fancycomponents.dev](https://www.fancycomponents.dev) | Premium, polished | React + Tailwind | High-end marketing sites |
-| [eldoraui.site](https://www.eldoraui.site) | Clean component library | React + Tailwind | General purpose UI |
-| [ui.lndev.me](https://ui.lndev.me) | Developer-focused | React + Tailwind | Technical projects |
-| [hover.dev](https://www.hover.dev) | Hover effects, micro-interactions | React + Tailwind | Interactive components |
-| [atomix-ui.vercel.app](https://atomix-ui.vercel.app) | Atomic design patterns | React + Tailwind | Component systems |
-
-### Tier 4: HTML/CSS libraries (for non-React projects or pure CSS patterns)
-
-| Site | Stack | Best for |
-|------|-------|----------|
-| [hyperui.dev](https://www.hyperui.dev) | Tailwind | Marketing components, blocks |
-| [preline.co](https://preline.co) | Tailwind | Business sites, dashboards |
-| [html.tailus.io](https://html.tailus.io) | Tailwind | Static sites, blocks |
-| [ui-layout.com](https://www.ui-layout.com) | Pure CSS | Layout patterns, grids |
-| [ground.bossadizenith.me](https://ground.bossadizenith.me) | HTML + CSS | Minimal components |
-| [flashui.site](https://flashui.site) | Tailwind | Quick prototypes |
-
-### Tier 5: Inspiration galleries (for overall aesthetic direction)
-
-| Site | Use when |
-|------|----------|
-| [godly.website](https://godly.website) | Need overall aesthetic direction (filter by industry) |
-| [httpster.net](https://httpster.net) | Looking for editorial/minimal portfolio style |
-| [siteinspire.com](https://siteinspire.com) | Browsing for layout inspiration |
-| [awwwards.com](https://awwwards.com) | Seeking cutting-edge (but often impractical) design |
-
-### Tier 6: Specific pattern libraries (scrape as needed for specific needs)
-
-| Site | Pattern type |
-|------|-------------|
-| [uiverse.io](https://uiverse.io) | Micro-interactions (buttons, loaders, cards) |
-| [reactcomponents.com](https://reactcomponents.com) | React component examples |
-| [csslayout.io](https://csslayout.io) | Layout patterns (sidebar, masonry, split) |
-| [animista.net](https://animista.net) | CSS animations with easing functions |
-| [easings.net](https://easings.net) | Motion timing visualization |
-| [ever-ui.com](https://www.ever-ui.com) | Component variations |
-
-### Scraping workflow (run this BEFORE tokens phase)
-
-```
-Step 1: Gather references (15-20 minutes)
-Primary sources (pick 2-3 from Tier 1):
-- Use Playwright MCP to navigate to chosen sites
-- Take full-page screenshots at 1440px
-- Extract specific component screenshots (navbar, hero, cards, forms, buttons)
-- Screenshot hover/focus/active states by using Playwright to trigger them
-- Save to /project-root/design-references/tier1/
-
-Design system references (pick 1-2 from Tier 2):
-- Navigate to design system documentation
-- Screenshot typography scales, color palettes, spacing systems
-- Extract computed CSS values (font-size, line-height, letter-spacing, colors)
-- Save to /project-root/design-references/systems/
-
-Aesthetic reference (pick 1 from Tier 3 OR Tier 5):
-- Find 2-3 sites that match the project's intended aesthetic
-- Full-page screenshots at 1440px
-- Save to /project-root/design-references/aesthetic/
-
-Step 2: Extract patterns (10 minutes)
-For each reference:
-- Open browser dev tools via Playwright
-- Inspect computed styles for:
-  * Typography: font-family, font-size, font-weight, line-height, letter-spacing
-  * Spacing: padding, margin, gap values (extract the scale/pattern)
-  * Colors: exact hex/rgb values, identify tint direction for neutrals
-  * Shadows: box-shadow values, layering approach
-  * Radii: border-radius values, extract the scale
-  * Motion: transition/animation properties, duration, easing
-- Screenshot interaction states:
-  * Hover (trigger :hover via Playwright)
-  * Focus (trigger :focus-visible)
-  * Active/pressed (trigger :active)
-  * Disabled (if present)
-- Document layout approach:
-  * Grid columns and gaps
-  * Breakpoint values
-  * Container max-widths
-  * Vertical rhythm (margin between sections)
-
-Step 3: Synthesize direction doc (5-10 minutes)
-Write a 1-2 page design direction doc with these sections:
-
-1. Reference sources
-   - List the 3-5 sites scraped and why each was chosen
-   - Include paths to saved screenshots
-
-2. Typography system
-   - Display face: [name], loaded from [Google Fonts/Bunny Fonts/etc]
-   - Body face: [name], loaded from [source]
-   - Scale: base [16px], ratio [1.25/1.333/1.5], steps [12, 14, 16, 20, 24, 32, 40, 48]
-   - Line heights: tight [1.1-1.2], normal [1.5], relaxed [1.75]
-   - Tracking: display [-0.02em], body [0], small UI [+0.01em]
-   - Source: adapted from [reference site]
-
-3. Color system
-   - Primary palette: [colors with hex values]
-   - Neutral tint direction: [warm/cool/neutral], based on [reference]
-   - Semantic tokens: success, warning, error, info
-   - Dark mode approach: [how neutrals shift, saturation adjustments]
-   - Source: inspired by [reference site]
-
-4. Spacing scale
-   - Base: [4px or 8px]
-   - Scale: [0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24] (in rem)
-   - Rhythm pattern: sections use [6-8 scale steps], components use [2-4]
-   - Container max-width: [1280px/1440px/etc]
-   - Source: measured from [reference site]
-
-5. Motion system
-   - Timing: micro [150-200ms], component [250-300ms], page [400ms]
-   - Easing: default [cubic-bezier(0.4, 0, 0.2, 1)], specifics from [reference]
-   - Stagger: list items [50-75ms offset]
-   - Reduced motion: replaces animations with [instant/fade]
-   - Source: extracted from [reference site] interactions
-
-6. Specific patterns we're adapting
-   - Navbar: [describe pattern, cite screenshot path]
-   - Hero: [describe pattern, cite screenshot]
-   - Cards: [describe pattern, cite screenshot]
-   - Buttons: [describe states, cite screenshot]
-   - Forms: [describe validation pattern, cite screenshot]
-   - [Any other key patterns]
-
-Stop and show me the direction doc + screenshots before generating tokens.
-User must approve or request changes before proceeding to token generation.
+```bash
+rm -rf /tmp/skills-install
+ls ~/.claude/skills/   # Expect: frontend-design  impeccable
 ```
 
-### Quality bar: What $20k websites do differently
-
-Real design teams at this price point:
-
-1. **Custom typography pairing** — Not Inter everywhere. A distinctive display face (serif, condensed sans, mono) paired with a readable body face. Loaded from Google Fonts or Bunny Fonts, not system defaults.
-
-2. **Intentional color systems** — Neutrals tinted toward the brand hue (warm grays for warm brands, cool grays for technical products). Semantic tokens (success, warning, error) derived from the palette, not Tailwind defaults.
-
-3. **Sophisticated spacing** — Rhythm follows a consistent scale (1.25x or 1.5x multiplier) but varies contextually. Tight spacing in dense UI, generous spacing in marketing sections. Never uniform padding everywhere.
-
-4. **Interaction details** — Every button has distinct hover, active, and focus states. Forms show validation inline. Loading states are designed, not just spinners. Empty states have illustration + actionable copy.
-
-5. **Motion that earns its place** — Stagger animations on list items (50-100ms offset). Scroll-triggered reveals with intersection observer. Micro-interactions on important actions. Everything respects `prefers-reduced-motion`.
-
-6. **Real hierarchy** — Not three sizes of the same weight. Use weight, tracking, and line-height contrast. Display text is tracked tight (-0.02em to -0.04em), small UI text is tracked wide (+0.01em to +0.02em).
-
-7. **Accessible by default** — WCAG AA contrast (4.5:1 body, 3:1 UI), focus indicators that aren't `outline: none`, ARIA labels on icon-only buttons, semantic HTML.
-
-8. **Cohesive asset quality** — If using icons, one library (lucide-react) used consistently. If using illustrations, one style maintained across all graphics. No mixing icon packs.
-
-The difference between a $500 template and a $20k site is not features — it's 100 small decisions made consistently across every screen.
+Restart Claude Code. Confirm `mcp__playwright__*` tools are available.
 
 ---
 
-## How to invoke this stack on a UI build
+## Part 2: The Project Brief (mandatory — refuse to build without it)
 
-Given a build request, run the skills in this order. Don't run them all at once — they'll talk over each other.
+**This is the part v2 was missing.** A reusable prompt cannot contain the 100 small decisions that make a site feel designed. Those come from the brief. Claude: if the user asks for a build and any field below is blank, ask for it or propose a specific answer and get confirmation. Do not start coding with an empty brief.
 
-**Phase 0: Reference gathering (new, always run first)**
-- Scrape 3-5 reference sites using Playwright MCP (see "Design reference library" above)
-- Extract screenshots, computed styles, and interaction patterns
-- Write the design direction doc citing specific references
-- Wait for confirmation before proceeding
+```
+PROJECT BRIEF
+─────────────
+1. Subject:        What is this site actually for? (product, person, event — be concrete)
+2. Audience:       Who lands on it and what should they feel in the first 3 seconds?
+3. One job:        The single action the page exists to drive.
+4. Direction:      Pick ONE from Part 3 (or describe your own in 2 sentences).
+5. Reference:      ONE site from the library whose feel we're chasing. One. Not five.
+6. Real copy:      Paste actual headline + 2-3 sentences of real content.
+                   (No lorem ipsum — placeholder copy produces placeholder design.)
+7. Motion level:   ambient / lively / theatrical  (see Part 4)
+8. Signature:      Optional — one element this page should be remembered by.
+                   If blank, Claude proposes one in the direction doc.
+```
 
-**Phase 1: Tokens** (`ui-ux-pro-max`)
-- Generate the design system using the direction doc as input
-- Spacing scale, type scale, color (semantic + primitive layers), radii, shadows, motion, breakpoints
-- Show me the tokens file and wait for confirmation before building
-
-**Phase 2: Build** (`frontend-design` + `design-taste-frontend` ambient)
-- Components reference tokens, never magic values
-- `design-taste-frontend`'s dials default to DESIGN_VARIANCE 8, MOTION_INTENSITY 6 — adjust if the project warrants it (dashboards lower variance, marketing higher)
-- Build 3-5 core components first, show for review before scaling to full feature set
-
-**Phase 3: Review** (`impeccable audit`)
-- Run a real review pass with file:line citations and PASS/FAIL per item
-- Apply the top 5 fixes, don't just report them
-- Re-run audit to confirm fixes landed
-
-**Phase 4: Verification** (Playwright MCP)
-- Load at 1440 / 768 / 375
-- Screenshot full-page at each breakpoint
-- Test interaction states (hover on buttons, focus on inputs, open modals)
-- Compare against reference screenshots from Phase 0
-- Fix any breakage and re-screenshot until clean
+A filled brief like *"Portfolio for a card-game web app dev, audience = potential clients, job = contact me, direction = Dark Stage, reference = ui.aceternity.com, motion = theatrical"* will beat any amount of standing rules with no brief.
 
 ---
 
-## Standing ground rules (anti-slop)
+## Part 3: Aesthetic Directions (pick one — never blend)
 
-These apply to every UI you build for me. Don't ask, just enforce.
+Each direction is a complete, opinionated package: type logic, color logic, motion character, and 2–3 reference sites to scrape. Picking one gives the model a specific target instead of an average. **Blending directions is how you get back to slop.**
 
-**Layout**
-- No centered-everything default. Centered is for a deliberate single-focal-point reason, not a fallback.
-- No glassmorphism (frosted blur over a vague gradient) unless explicitly requested and justified.
-- No "floating cards on a gradient" hero.
-- Cards are the lazy answer. Use them when they're truly the right affordance. Nested cards are always wrong.
-- Asymmetric layouts over symmetric when the content hierarchy supports it.
+### A. Dark Stage
+Theatrical dark UI where motion is the brand. Near-black canvas (not #000 — tint it: `#0A0A0F` blue-black or `#0F0A0A` warm-black), one electric accent used sparingly, glow used on the accent only.
+- **Type:** condensed or wide grotesque display (Clash Display, Space Grotesk, Archivo Expanded) + neutral body
+- **Motion:** entrance choreography, scroll-driven reveals, cursor-reactive elements
+- **Scrape:** ui.aceternity.com, magicui.design, linear.app
+- **Best for:** dev tools, portfolios, anything "launch-y"
 
-**Color**
-- No pure `#000` on pure `#fff`. Tint neutrals toward the brand hue.
-- No rainbow gradients on text or backgrounds (purple to pink to orange).
-- No neon glow shadows.
-- Dark mode is not inverted lightness — saturation dialed back, shadows reduced or replaced with borders.
-- Gradients only when they serve hierarchy or brand identity. Avoid decorative-only gradients.
+### B. Editorial Print
+Magazine logic on the web. Light background tinted toward brand hue, oversized serif display, asymmetric multi-column grids, hairline rules that encode real structure.
+- **Type:** high-contrast serif display (Fraunces, Canela-alikes, Instrument Serif) + humanist sans body
+- **Motion:** restrained but precise — text mask reveals, image parallax at 0.9–0.95 ratio, slow underline draws
+- **Scrape:** httpster.net picks, godly.website (filter: editorial), stripe.com/docs for hierarchy
+- **Best for:** content sites, studios, anything with real writing
 
-**Typography**
-- Never use Inter, Roboto, Arial, or system-ui for display faces. Pick something distinctive.
-- Hierarchy through scale + weight contrast (at least 1.25 ratio between steps). Three sizes of one weight is a fail.
-- Body line-length 65–75ch. Don't let prose blocks span the container.
-- No all-caps body text. Reserve for short labels (navigation, tags, metadata).
-- Display text: tight tracking (-0.02em to -0.04em). Small UI text: wide tracking (+0.01em to +0.02em).
+### C. Soft Industrial
+Light technical UI — warm or cool grays tinted toward brand, visible grid, mono accents for data, generous whitespace, borders over shadows.
+- **Type:** clean grotesque display tracked tight + mono for labels/data (Geist + Geist Mono, or Söhne-alikes)
+- **Motion:** micro-interactions everywhere, almost no large movement — hover states, number tickers, subtle border glows
+- **Scrape:** vercel.com/design, originui.com, primer.style
+- **Best for:** SaaS dashboards, dev tooling, B2B
 
-**Spacing**
-- Every value comes from the defined scale. No `p-3` next to `p-5` next to `p-7` — pick a rhythm and hold it.
-- Vary spacing for rhythm; same padding everywhere is monotony.
-- Sections should breathe. Use generous vertical spacing between major sections (80px–120px desktop, 48px–64px mobile).
+### D. Playful Dimensional
+Saturated color, soft 3D depth (layered shadows, not glassmorphism), rounded geometry, springy physics on everything.
+- **Type:** rounded or chunky display (Bricolage Grotesque, Gambetta, Clash Grotesk) + friendly body
+- **Motion:** spring-based, overshoot allowed HERE (the one direction where bounce is correct), draggable elements, hover scale
+- **Scrape:** cuicui.day, kokonutui.com, godly.website (filter: playful)
+- **Best for:** consumer apps, games, creative tools — your Omi app would live here
 
-**Iconography**
-- No emoji as icons. Use lucide-react or hand-drawn SVG.
-- Don't put an icon on every button. Most buttons read better as just text.
-- Icon size should match surrounding text metrics (1em or 1.2em for inline, fixed px for standalone).
+### E. Brutalist Signal
+Raw, loud, high-contrast. System-breaking layouts, huge type, exposed structure, deliberate "wrongness" executed with total precision.
+- **Type:** one enormous display face doing all the work + tiny utility mono
+- **Motion:** hard cuts and snaps over eases, marquees, hover inversions, instant state changes as a style
+- **Scrape:** godly.website (filter: brutalist), httpster.net
+- **Best for:** events, drops, statements — high risk, use deliberately
 
-**Motion**
-- `prefers-reduced-motion` respected universally.
-- Micro-interactions 150–250ms. Page-level 250–400ms.
-- No bounce / elastic easing on UI elements. Ease-out exponentials (quart, quint, expo) preferred.
-- Stagger animations on lists: 50–100ms offset between items, max 6 items or it reads as slow.
-- Scroll-triggered animations fire once at 20% viewport entry, not on every scroll.
-
-**Microcopy**
-- No "Welcome to your dashboard!", no "Let's get started!", no "Awesome!".
-- No "Lorem ipsum" — write real copy, even for placeholders.
-- Button labels are verbs that describe the action. "Submit" is lazy. "Save changes", "Send message", "Create account" are clear.
-- Empty / error messages tell the user what to do, not just what failed.
-- Casual, first-person, student-engineer voice. No corporate-speak or AI-sounding phrasing.
-
-**Interaction states (the test that separates good from generic)**
-- Every interactive element has hover, active, focus-visible, and disabled states designed explicitly.
-- Focus indicators are not `outline: none`. Use a visible ring or underline.
-- Hover states are subtle (opacity 0.8–0.9 or slight background shift), not dramatic.
-- Active/pressed states provide tactile feedback (scale 0.98 or brightness drop).
-- Loading states show progress or spinner, not just disabled buttons.
-
-**Engineering hygiene that affects design**
-- Tokens live in one file (`lib/design-tokens.ts` or similar) and feed both Tailwind config and CSS variables. No magic numbers in component code.
-- Every interactive element has a `:focus-visible` style — not the default that gets reset to `none`.
-- Hit targets at least 40×40px (44px on mobile).
-- Loading states exist for async actions. Empty states exist for any list that can be empty.
-- Semantic HTML: headings in order (h1, h2, h3), buttons for actions, links for navigation, forms with labels.
-
-**Accessibility (non-negotiable)**
-- WCAG AA contrast minimum: 4.5:1 for body text, 3:1 for UI components, 7:1 for small text if aiming for AAA.
-- All icon-only buttons have `aria-label` or `sr-only` text.
-- Form inputs have associated labels (explicit `for` attribute or wrapping label).
-- Color is never the only indicator of state (use icons, text, or patterns as backup).
-- Keyboard navigation works: tab order is logical, focus is always visible, no keyboard traps.
-
-**File organization**
-- Components in `components/ui/` for primitives (button, input, card), `components/sections/` for page sections (hero, features, pricing).
-- Shared utilities in `lib/utils.ts`, design tokens in `lib/design-tokens.ts`.
-- Each component file includes types, the component, and any variants. No splitting into separate type files unless the types are shared across 3+ components.
-
-**On asking permission**
-- Don't ask before applying these rules. They're standing.
-- Do ask before adding dependencies, deleting files, running migrations, or committing.
-- If a rule conflicts with a specific project requirement, flag it and ask which takes priority.
+> Claude: the brief's direction wins over your defaults. Known AI-default looks to avoid spending free choices on: cream + serif + terracotta; near-black + single acid-green accent; broadsheet hairlines + zero radius. If the chosen direction legitimately calls for one of these elements, execute it — but the rest of the design must be derived from the brief's subject, not the template.
 
 ---
 
-## When the build is "done"
+## Part 4: Motion Playbook (what TO do)
 
-Done = all of these are true:
+The user wants animated sites. Here's the positive spec, by intensity level from the brief.
 
-1. `impeccable audit` passes (or remaining FAILs are acknowledged with a reason and documented)
-2. Playwright screenshots at all three breakpoints (1440 / 768 / 375) look right
-3. Reference comparison: side-by-side screenshot with one Tier 1 reference site shows comparable quality
-4. Dev server is reachable and interactive states (hover, focus, click) work as expected
-5. No console errors, no accessibility violations flagged by axe or similar
+### Motion levels
 
-Don't claim done from looking at the code alone. Visual verification is mandatory.
+| Level | Page load | Scroll | Hover | Ambient |
+|---|---|---|---|---|
+| **ambient** | single fade-up of hero | reveals on sections only | subtle (opacity/border) | none |
+| **lively** | 3–5 element choreography | reveals + one parallax layer | scale/color/icon nudges | one slow background element |
+| **theatrical** | full orchestrated sequence | scroll-driven scenes, pinning | cursor-reactive, magnetic buttons | gradient drift, particles, marquee |
+
+### The five recipes (use per level above)
+
+**1. Entrance choreography (page load).** Stagger the hero's elements in a deliberate order: backdrop → headline (masked rise or per-word stagger, 40–60ms/word) → subhead → CTA → peripheral nav. Total sequence under 1200ms. One sequence per page — interior sections use scroll reveals, not load animations.
+
+```jsx
+// motion/react — orchestrated hero
+const container = { show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
+const rise = {
+  hidden: { y: 24, opacity: 0 },
+  show: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }
+};
+```
+
+**2. Scroll reveals.** Fire once at ~20% viewport entry. Vary the reveal per content type — text rises, images scale from 1.04→1 with a clip reveal, cards stagger 60–80ms. Never the same fade-up on everything; uniform reveals read as templated.
+
+```jsx
+<motion.div initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} />
+```
+
+**3. Hover micro-interactions.** Every interactive element gets a designed hover, not a default one. Buttons: background shift + icon nudge (translateX 2–4px) or magnetic pull at theatrical level. Cards: lift 2–4px + shadow deepen + inner image scale 1.03. Links: underline draw (scaleX transform, transform-origin left). 150–250ms, ease-out.
+
+**4. The signature moment.** One scroll-driven set piece per page that nothing else competes with: a pinned section where content swaps as you scroll, a number ticker counting up, an SVG path drawing itself, a horizontal-scroll gallery, text that fills with color as it passes center. This is where the "wow" budget goes — concentrated, not sprinkled.
+
+**5. Ambient life (theatrical only).** A slow gradient drift (20s+ loop), a marquee of logos/keywords (pause on hover), or a subtle grain/particle layer at low opacity. One ambient element max — two reads as noise.
+
+### Motion physics rules
+
+- Easing: ease-out exponentials for entrances (`cubic-bezier(0.22, 1, 0.36, 1)` is the workhorse), ease-in-out for loops. Springs (`type: "spring", stiffness: 300, damping: 24`) for Playful Dimensional only.
+- Micro: 150–250ms. Component: 250–400ms. Scene/page: 400–800ms.
+- Stagger lists 50–80ms per item, cap visible stagger at ~6 items.
+- Animate `transform` and `opacity` only; never animate layout properties on scroll.
+- `prefers-reduced-motion`: every effect degrades to instant or simple fade. Non-negotiable, wired from the start, not retrofitted.
 
 ---
 
-## Quick reference: skill command map
+## Part 5: Workflow (hard gates — proof required at each)
 
-| Command | When to use | What it does |
-|---------|-------------|--------------|
-| `impeccable craft` | Full build from scratch | Shape → tokens → build → review cycle |
-| `impeccable audit` | Review existing code | File:line citations, PASS/FAIL checklist |
-| `impeccable critique` | UX/design review | Hierarchy, clarity, emotional resonance |
-| `impeccable polish` | Final pass before shipping | Design system alignment, micro-details |
-| `impeccable extract` | Refactor duplicated patterns | Pull into reusable components |
-| `impeccable distill` | Simplify over-complex UI | Strip to essence, reduce noise |
-| `impeccable animate` | Add purposeful motion | Micro-interactions, scroll reveals |
-| `impeccable harden` | Edge cases + resilience | Error states, empty states, loading, i18n |
+Claude: each phase ends with a deliverable shown to the user. **Do not proceed past a gate without showing the deliverable.** If a phase gets skipped or compressed, the build restarts at the skipped phase.
 
-Playwright MCP commands are prefixed `mcp__playwright__*` — use for navigation, screenshots, and interaction testing.
+### Phase 0 — References (gate: direction doc)
+Scrape the ONE reference site from the brief plus 1–2 from the chosen direction's list using Playwright MCP:
+- Full-page screenshot at 1440px, saved to `design-references/`
+- Extract computed values from key elements (dev tools via Playwright): exact font stacks, sizes, line-heights, letter-spacing; spacing values; hex colors; shadow definitions; transition durations and easings
+- Screenshot hover/focus states by triggering them
+
+Then write a one-page direction doc containing: the brief restated, extracted values (real numbers, not vibes), the type pairing with load source, palette as named hexes, spacing scale, motion plan mapped to the level + recipes from Part 4, and the proposed signature element. **The doc must cite extracted values. A direction doc with no real numbers in it is fake — redo it.** STOP for approval.
+
+### Phase 1 — Tokens (gate: tokens file)
+One file (`lib/design-tokens.ts` or `tokens.css`) derived entirely from the approved direction doc: color (primitive + semantic layers), type scale, spacing scale, radii, shadows, motion durations/easings, breakpoints. Feeds Tailwind config and CSS variables. Show it. STOP for approval.
+
+### Phase 2 — First section (gate: screenshot)
+Build ONLY the hero + nav, with full motion (entrance choreography per the level). Screenshot it at 1440px via Playwright next to the reference screenshot. STOP — this is the cheapest point to course-correct. The user names what's off; fix before scaling.
+
+### Phase 3 — Full build
+Scale to remaining sections using approved tokens and patterns. Every value from the token file — a magic number in component code is a defect. Scroll reveals per Part 4, varied by content type. Build the signature moment.
+
+### Phase 4 — Audit (`impeccable audit`)
+Run with file:line citations and PASS/FAIL. **Apply** the top 5 fixes, re-run to confirm. Remaining FAILs documented with reasons.
+
+### Phase 5 — Visual verification (Playwright)
+- Screenshot 1440 / 768 / 375, full page
+- Trigger and screenshot hover, focus-visible, and active states on primary interactive elements
+- Record or step through the entrance choreography and signature moment
+- Side-by-side against the reference screenshot — comparable quality or iterate
+- Zero console errors; run an axe pass for accessibility violations
+
+**Done = all of Phase 5 passes.** Never claim done from reading code.
+
+---
+
+## Part 6: Standing rules (condensed)
+
+The short list that survives from v2 — framed as defaults to execute, not just sins to avoid.
+
+**Type.** Distinctive display face per the direction (never Inter/Roboto/system-ui for display), readable body face, ≥1.25 scale ratio, display tracked -0.02 to -0.04em, small UI tracked +0.01em, prose at 65–75ch.
+
+**Color.** Neutrals tinted toward brand hue. Dark mode = desaturated palette + borders over shadows, not inverted lightness. Accent does the glowing; nothing else does.
+
+**Layout.** Hierarchy decides alignment — asymmetric when content supports it. Cards only when they're the right affordance; never nested. Sections breathe: 80–120px vertical between major sections desktop, 48–64px mobile.
+
+**States.** Hover, active, focus-visible, disabled designed on every interactive element. Focus is a visible ring, never `outline: none`. Loading states designed; empty states have direction + action. Hit targets ≥44px mobile.
+
+**Copy.** Real words from the brief. Buttons are specific verbs ("Save changes", not "Submit"). Errors say what to do next. No "Welcome to your dashboard!", no exclamation-mark enthusiasm.
+
+**Accessibility.** WCAG AA (4.5:1 body, 3:1 UI), aria-labels on icon buttons, labeled inputs, color never the sole state indicator, logical tab order, reduced-motion respected.
+
+**Hygiene.** Tokens in one file. Semantic HTML, headings in order. Icons from one library (lucide-react). No emoji as icons.
+
+**Permissions.** Apply these rules without asking. DO ask before: adding dependencies, deleting files, migrations, commits. If a rule conflicts with the brief, the brief wins — flag it.
+
+---
+
+## Part 7: Reference library (trimmed, mapped)
+
+| Use | Sites |
+|---|---|
+| Motion-heavy components | ui.aceternity.com · magicui.design · hover.dev |
+| Clean components | ui.shadcn.com · originui.com · 21st.dev |
+| Design systems (tokens) | vercel.com/design · linear.app · primer.style |
+| Playful | cuicui.day · kokonutui.com |
+| Aesthetic browsing | godly.website (filter by industry) · httpster.net |
+| Motion timing | easings.net · animista.net |
+
+Scraping etiquette: 500ms–1s between navigations; cache screenshots locally; some sites block headless — fall back to `--headless=false`.
 
 ---
 
 ## Troubleshooting
 
-**Skills not loading after install**
-- Restart Claude Code completely (close VSCode, reopen)
-- Check `~/.claude/skills/` contains all four skill directories
-- Each skill dir must have a `SKILL.md` file at the root
-
-**Playwright MCP not connecting**
-- Validate `~/.claude.json` is valid JSON (run the node validation command from step 5)
-- Restart Claude Code after editing the config
-- Check Claude Code logs for MCP connection errors
-
-**ui-ux-pro-max design-system generator failing**
-- Ensure Python 3 is on PATH: `python3 --version` or `python --version`
-- The generator script is at `~/.claude/skills/ui-ux-pro-max/scripts/design_system.py`
-- If it's missing, re-run the `uipro-cli init` step
-
-**Reference scraping hitting rate limits**
-- Add delays between Playwright navigation calls (500ms–1s)
-- Some sites (like Vercel) may block headless browsers — use `--headless=false` flag
-- Cache screenshots locally to avoid re-scraping the same site
-
----
+- **Skills not loading:** restart Claude Code fully; verify each dir in `~/.claude/skills/` has a root `SKILL.md`.
+- **Playwright MCP down:** validate `~/.claude.json` JSON, restart, check logs.
+- **Output still looks generic:** the brief was too thin. Go back to Part 2 — name a more specific reference, paste real copy, pick a sharper direction. Generic in, generic out; no install step fixes that.
 
 ## Version history
 
-- **v2.0** (current): Added design reference scraping, $20k quality standards, expanded ground rules
-- **v1.0**: Initial four-skill + Playwright MCP setup
+- **v3.0** (current): Lean 2-skill stack, mandatory project brief, five named aesthetic directions, positive motion playbook with code, hard-gated phases with proof requirements
+- **v2.0**: Four skills + reference scraping + prohibition-style ground rules
+- **v1.0**: Initial setup
