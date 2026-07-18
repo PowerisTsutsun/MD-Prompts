@@ -8,7 +8,7 @@
 
 I maintain a persistent knowledge folder ("second brain") at:
 
-**`C:\Users\you\Desktop\Projects\claude-brain`**
+**`C:\Users\user\Desktop\Projects\claude-brain`**
 
 This folder is the source of truth for everything you should already know about how I work and what I'm building. Before answering, treat it as required reading — not optional reference.
 
@@ -85,5 +85,5 @@ Claude Code reads `CLAUDE.md` automatically at session start, so the hook fires 
 
 1. Create a Project
 2. Paste this entire prompt into the Project's **custom instructions**
-3. Upload the contents of `C:\Users\you\Desktop\Projects\claude-brain` into the Project's **knowledge** section
+3. Upload the contents of `C:\Users\user\Desktop\Projects\claude-brain` into the Project's **knowledge** section
 4. Re-upload whenever you update the brain files (or sync periodically)
