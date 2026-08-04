@@ -142,7 +142,7 @@ A report without a complete manifest is an incomplete report.
 name: audit-agent
 description: Use this agent to exhaustively audit an entire project for security vulnerabilities, code quality issues, and reliability gaps — every file, every finding, down to nits. Invoke for "audit", "security review", "is this safe to ship", or before a production deploy. Read-heavy; does not modify code unless explicitly told to apply an AGENT-SAFE fix.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -212,7 +212,7 @@ Critical: N | High: N | Medium: N | Low: N | Nit: N
 name: debug-agent
 description: Use this agent to root-cause a specific bug, error, or unexpected behavior — then sweep the ENTIRE project for every other instance of the same defect pattern. Invoke when given a stack trace, a "works here but not there" report, or "why is X happening."
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -266,7 +266,7 @@ alive in five others is not fixed.
 name: check-agent
 description: Use this agent to verify a claim or change against the FULL project — pre-merge review, "does this actually work," "did this change break anything anywhere." Traces every usage, caller, and dependency of the changed code across the whole repo, not just the diff.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -315,7 +315,7 @@ something. Your verdict must be earned by tracing the change through the
 name: test-agent
 description: Use this agent to bring an entire project's test coverage up — inventory every testable unit across the whole repo, map what's covered and what isn't, write tests for the gaps, and run the full suite. Also invoked after bug fixes for regression tests.
 tools: Read, Grep, Glob, Bash, Write, Edit
-model: sonnet
+model: opus
 ---
 ```
 
@@ -368,7 +368,7 @@ regression — and you know what needs testing because you inventoried the
 name: refactor-agent
 description: Use this agent to sweep the ENTIRE project for dead code, unworking/broken functions, deprecated/legacy paths, duplication to consolidate, and repo cruft — the full "works → finished product" cleanup. Invoke for "clean this up", "find dead code", "finishing pass", "delete what's unused", "consolidate duplicates". Read-heavy by default; proposes removals, applies AGENT-SAFE ones only when asked, in confidence order.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -514,7 +514,7 @@ between it and that bar>
 name: security-agent
 description: Use this agent to treat the repo as hostile territory and find EVERY way an attacker can hurt the system — exposed secrets, auth/authz holes, injection, XSS, CSRF, SSRF, insecure file handling, dependency CVEs, misconfigured BaaS/RLS, DoS — across the entire project, then harden what's safe to fix. Far deeper on security than audit-agent's category 1. Invoke for "security audit", "harden this", "pentest the code", "is this safe to ship".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -642,7 +642,7 @@ Manifest.
 name: reliability-agent
 description: Use this agent to audit the ENTIRE project for five reliability patterns — idempotency, deduplication, caching, rate limiting & outbound resilience, and atomic operations — where every finding carries a concrete failure narrative (the exact retry/replay/race that breaks). Invoke for "reliability audit", "is this safe under retries/load", "idempotency check", "race conditions", "will this double-charge".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -747,7 +747,7 @@ backlog it with rationale.
 name: perf-agent
 description: Use this agent for an exhaustive full-project performance sweep — N+1 queries, missing indexes vs. actual query patterns, bundle size offenders, unmemoized re-renders, waterfall fetches, serverless cold-start weight. Invoke for "why is this slow", "performance pass", "optimize", "bundle size". Nothing else in the suite owns speed.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -831,7 +831,7 @@ Top 5 by expected impact: <list>
 name: deps-agent
 description: Use this agent for a full dependency lifecycle sweep — CVEs in the lockfile, outdated packages with breaking-change analysis, unused/phantom dependencies, abandoned packages, license flags, supply-chain red flags. Invoke for "update dependencies", "check CVEs", "is X safe to upgrade", "is this package maintained".
 tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
-model: sonnet
+model: opus
 ---
 ```
 
@@ -902,7 +902,7 @@ for all of them. Exhaustive: every dependency in every manifest in the repo
 name: migration-agent
 description: Use this agent to review schema/data migrations before they run — destructive operations, missing rollback paths, lock-heavy operations on large tables, RLS policy drift after schema changes, and three-way agreement between ORM schema, migration files, and the actual database. Reviews migrations; NEVER runs them. Invoke for "review this migration", "is this schema change safe".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -974,7 +974,7 @@ Verdict: SAFE | SAFE WITH CONDITIONS | UNSAFE
 name: docs-agent
 description: Use this agent to exhaustively check every doc in the project against reality — READMEs that lie, setup instructions that no longer work, env var docs missing vars actually read, API docs that drifted from routes — and to generate missing docs. Also maintains per-project ISSUES.md / DECISIONS.md accuracy. Invoke for "are the docs accurate", "update the README", "generate docs".
 tools: Read, Grep, Glob, Bash, Write, Edit
-model: sonnet
+model: opus
 ---
 ```
 
@@ -1047,7 +1047,7 @@ Claims checked: N — true: N, FALSE: N, unverifiable: N
 name: ui-agent
 description: Use this agent for an exhaustive accessibility and design-consistency sweep across every component and page — contrast failures, missing focus states, keyboard traps, missing labels, inconsistent spacing/typography vs. design tokens or a DESIGN.md spec, hardcoded values that should be tokens. Invoke for "a11y check", "accessibility audit", "design consistency", "does this match the design spec".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -1128,7 +1128,7 @@ canonical by frequency — labeled as such.
 name: api-contract-agent
 description: Use this agent to verify every API route's actual behavior against its declared contract — validation schemas that don't match handler logic, response shapes drifting from the frontend types consuming them, missing auth middleware, undocumented status codes. Goes contract-deep where audit-agent goes broad. Invoke for "do the types match", "contract check", "schema drift", "validation gaps".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -1205,7 +1205,7 @@ Routes: N — clean: N — with findings: N — unprotected: N — unvalidated: 
 name: env-agent
 description: Use this agent for the full configuration story — every env var read anywhere vs. .env.example vs. deployment docs, secrets committed anywhere including git history, client-bundle exposure (NEXT_PUBLIC_ misuse), and environment divergence that would break prod. Invoke for "check env vars", "config audit", "why does prod behave differently".
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
@@ -1286,7 +1286,7 @@ Vars read: N | declared in example: N | validated at boot: N
 name: release-agent
 description: Use this agent as the pre-deploy gate — orchestrates check-agent's ripple logic, build verification, migration review (if migrations are in the release), env completeness for the target environment, changelog generation from commits, and a final go/no-go verdict. Invoke for "ready to ship?", "pre-deploy check", "release checklist". Gates the release; never performs the deploy.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: opus
 ---
 ```
 
