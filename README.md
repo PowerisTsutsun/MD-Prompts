@@ -25,7 +25,7 @@ for what differs.
 | [`refactor.md`](refactor.md) | 205 | Finishing pass that takes a project from "works" to "shippable" — dead code, legacy paths, duplication, repo hygiene, dependencies, then release-grade quality on what survives. |
 | [`bugfix.md`](bugfix.md) | 186 | Extreme bug hunt — 100% file coverage with a durable `.bug-hunt/` state directory so the audit survives context compaction, plus a baseline-first fix and verify protocol. |
 | [`Master-UI.md`](Master-UI.md) | 272 | Bootstrap prompt for high-craft, motion-heavy UI builds: lean skill stack, mandatory project brief, five named aesthetic directions, a motion playbook, and gated workflow phases. |
-| [`DEVbrain-project-prompt`](DEVbrain-project-prompt) | 89 | Pre-project prompt wiring a session to a persistent `claude-brain/` knowledge folder — what to read when, and rules of engagement. No `.md` extension; paste it or save it as `CLAUDE.md`. |
+| [`DEVbrain-project-prompt`](DEVbrain-project-prompt) | 91 | Pre-project prompt wiring a session to a persistent `devbrain/` knowledge folder — what to read when, and rules of engagement. No `.md` extension; paste it or save it as `CLAUDE.md`. |
 | [`openAI/`](openAI/) | — | All seven of the above, ported to be harness-agnostic. `AGENTS.md` instead of `CLAUDE.md`, named role prompts instead of native subagents, inlined design layer instead of Skills, and explicit degraded-mode rules for chat-only models. |
 
 ---

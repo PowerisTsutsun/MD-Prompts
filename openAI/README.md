@@ -19,7 +19,7 @@ Substance is unchanged. Only the vendor-bound scaffolding was replaced.
 | [`refactor.md`](refactor.md) | `../refactor.md` | Finishing pass. Portability header + instruction-file lookup that isn't Claude-specific. |
 | [`bugfix.md`](bugfix.md) | `../bugfix.md` | Bug hunt. `Task tool` subagents → generic parallel-worker wording with a serial fallback. Instruction-file lookup now leads with `AGENTS.md`. |
 | [`Master-UI.md`](Master-UI.md) | `../Master-UI.md` | **Heaviest port.** Two Anthropic Skills replaced by inline design layer + a new Appendix A audit checklist; MCP setup for Codex/Cursor plus a no-MCP Playwright script fallback; Part 0 loading table. |
-| [`DEVbrain-project-prompt.md`](DEVbrain-project-prompt.md) | `../DEVbrain-project-prompt` | `CLAUDE.md` → `AGENTS.md`, `claude-brain/` → `devbrain/`, hardcoded path → flagged placeholder, and per-harness loading for Codex / Cursor / Aider / API / ChatGPT Projects / plain chat. Gains the `.md` extension. |
+| [`DEVbrain-project-prompt.md`](DEVbrain-project-prompt.md) | `../DEVbrain-project-prompt` | `CLAUDE.md` → `AGENTS.md`, and per-harness loading for Codex / Cursor / Aider / API / ChatGPT Projects / plain chat. Gains the `.md` extension. |
 
 ---
 

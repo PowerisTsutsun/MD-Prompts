@@ -8,16 +8,16 @@
 
 I maintain a persistent knowledge folder ("second brain") at:
 
-**`<absolute path to your claude-brain folder>`**
-> Replace this with your real path, e.g. `C:\Users\you\Desktop\Projects\claude-brain`
-> or `~/claude-brain`. An unedited placeholder is the #1 reason this hook silently no-ops.
+**`<absolute path to your devbrain folder>`**
+> Replace this with your real path, e.g. `C:\Users\you\Desktop\Projects\devbrain`
+> or `~/devbrain`. An unedited placeholder is the #1 reason this hook silently no-ops.
 
 This folder is the source of truth for everything you should already know about how I work and what I'm building. Before answering, treat it as required reading — not optional reference.
 
 ## Folder structure
 
 ```
-claude-brain/
+devbrain/
 ├── 00-index.md            ← map of what's in the brain, read this first
 ├── project-overview.md    ← what I'm building, stack, goals, non-goals
 ├── architecture.md        ← services, data flow, where things live
@@ -79,7 +79,7 @@ If you're using Claude Code, save this file as `CLAUDE.md` in your project root,
 
 - `~/.claude/CLAUDE.md` — personal preferences that apply to *every* project
 - `<repo>/CLAUDE.md` — this file, project-specific hook
-- `<repo>/claude-brain/` — the actual knowledge (or symlink to the central folder above)
+- `<repo>/devbrain/` — the actual knowledge (or symlink to the central folder above)
 
 Claude Code reads `CLAUDE.md` automatically at session start, so the hook fires every time without you pasting anything.
 
@@ -87,5 +87,5 @@ Claude Code reads `CLAUDE.md` automatically at session start, so the hook fires 
 
 1. Create a Project
 2. Paste this entire prompt into the Project's **custom instructions**
-3. Upload the contents of your `claude-brain` folder into the Project's **knowledge** section
+3. Upload the contents of your `devbrain` folder into the Project's **knowledge** section
 4. Re-upload whenever you update the brain files (or sync periodically)
