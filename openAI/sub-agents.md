@@ -25,7 +25,7 @@ work is identical, only the dispatch differs.
 | **OpenAI Codex CLI** | `~/.codex/prompts/<name>.md` | `/<name>` (e.g. `/security-agent`) |
 | **Cursor / Windsurf** | `.cursor/rules/<name>.mdc` with `alwaysApply: false` | `@<name>` in chat |
 | **GPT-5-class via API** | the role block as the system prompt | one API session per role |
-| **Aider / Copilot Agent / Gemini CLI** | keep this file in the repo; reference it | "follow the `<name>` role in Sub-Agents.md" |
+| **Aider / Copilot Agent / Gemini CLI** | keep this file in the repo; reference it | "follow the `<name>` role in sub-agents.md" |
 | **ChatGPT (no repo access)** | paste the block, then paste the code | see *Degraded mode* below |
 
 Add the routing table below to your `AGENTS.md` so the model knows which role to

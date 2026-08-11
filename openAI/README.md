@@ -13,13 +13,13 @@ Substance is unchanged. Only the vendor-bound scaffolding was replaced.
 
 | File | Ported from | Port notes |
 |---|---|---|
-| [`Sub-Agents.md`](Sub-Agents.md) | `../Sub-Agents.md` | 15 review roles. Native subagent dispatch → per-harness install table (`~/.codex/prompts/`, `.cursor/rules/`, API system prompt). Tool names → capability declarations. `model: opus` → `reasoning: high`. |
-| [`brutalsecure.md`](brutalsecure.md) | `../brutalsecure.md` | Security audit, 12 sections. Harness-neutral intro + degraded-mode contract. Body unchanged — it was already stack-agnostic. |
+| [`sub-agents.md`](sub-agents.md) | `../sub-agents.md` | 15 review roles. Native subagent dispatch → per-harness install table (`~/.codex/prompts/`, `.cursor/rules/`, API system prompt). Tool names → capability declarations. `model: opus` → `reasoning: high`. |
+| [`security-audit.md`](security-audit.md) | `../security-audit.md` | Security audit, 12 sections. Harness-neutral intro + degraded-mode contract. Body unchanged — it was already stack-agnostic. |
 | [`aggressive-audit.md`](aggressive-audit.md) | `../aggressive-audit.md` | Reliability audit. Portability header explaining why Phase 0 recon is load-bearing without shell access. |
 | [`refactor.md`](refactor.md) | `../refactor.md` | Finishing pass. Portability header + instruction-file lookup that isn't Claude-specific. |
 | [`bugfix.md`](bugfix.md) | `../bugfix.md` | Bug hunt. `Task tool` subagents → generic parallel-worker wording with a serial fallback. Instruction-file lookup now leads with `AGENTS.md`. |
-| [`Master-UI.md`](Master-UI.md) | `../Master-UI.md` | **Heaviest port.** Two Anthropic Skills replaced by inline design layer + a new Appendix A audit checklist; MCP setup for Codex/Cursor plus a no-MCP Playwright script fallback; Part 0 loading table. |
-| [`DEVbrain-project-prompt.md`](DEVbrain-project-prompt.md) | `../DEVbrain-project-prompt` | `CLAUDE.md` → `AGENTS.md`, and per-harness loading for Codex / Cursor / Aider / API / ChatGPT Projects / plain chat. Gains the `.md` extension. |
+| [`master-ui.md`](master-ui.md) | `../master-ui.md` | **Heaviest port.** Two Anthropic Skills replaced by inline design layer + a new Appendix A audit checklist; MCP setup for Codex/Cursor plus a no-MCP Playwright script fallback; Part 0 loading table. |
+| [`devbrain-hook.md`](devbrain-hook.md) | `../devbrain-hook.md` | `CLAUDE.md` → `AGENTS.md`, and per-harness loading for Codex / Cursor / Aider / API / ChatGPT Projects / plain chat. |
 
 ---
 
@@ -36,7 +36,7 @@ sense the prompts now check `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/` and
 via the API. The routing table still tells the orchestrating session which to reach for;
 only dispatch is manual.
 
-**3. Skills → inline content.** Anthropic Skills are Claude-only, so `Master-UI.md` can't
+**3. Skills → inline content.** Anthropic Skills are Claude-only, so `master-ui.md` can't
 `cp` a design skill into place. Its design layer is now the prompt itself, and the
 `impeccable audit` step became **Appendix A** — a 7-section, 32-item checklist requiring a
 PASS/FAIL plus `file:line` citation per item.
@@ -68,11 +68,11 @@ without repo access emits a confident report that reads as if it swept the codeb
 ```bash
 # Roles as invocable prompts
 mkdir -p ~/.codex/prompts
-# split Sub-Agents.md on its --- boundaries into ~/.codex/prompts/<name>.md
+# split sub-agents.md on its --- boundaries into ~/.codex/prompts/<name>.md
 # then: /audit-agent, /security-agent, /refactor-agent, ...
 
 # A standalone pass — paste at the repo root
-codex "$(cat openAI/brutalsecure.md)"
+codex "$(cat openAI/security-audit.md)"
 ```
 
 Set reasoning effort to high before running any of these.

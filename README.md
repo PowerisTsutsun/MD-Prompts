@@ -19,13 +19,13 @@ for what differs.
 
 | File | Lines | What it does |
 |---|---|---|
-| [`Sub-Agents.md`](Sub-Agents.md) | 1396 | Fifteen exhaustive-mode subagent definitions (audit, security, reliability, debug, check, test, refactor, perf, deps, migration, docs, ui, api-contract, env, release) plus the routing table and universal rules that govern them. |
-| [`brutalsecure.md`](brutalsecure.md) | 340 | Full security audit and hardening pass — 12 sections from exposed secrets through DoS, with an aggressive autofix policy and a hard stage-only boundary for irreversible actions. |
+| [`sub-agents.md`](sub-agents.md) | 1396 | Fifteen exhaustive-mode subagent definitions (audit, security, reliability, debug, check, test, refactor, perf, deps, migration, docs, ui, api-contract, env, release) plus the routing table and universal rules that govern them. |
+| [`security-audit.md`](security-audit.md) | 340 | Full security audit and hardening pass — 12 sections from exposed secrets through DoS, with an aggressive autofix policy and a hard stage-only boundary for irreversible actions. |
 | [`aggressive-audit.md`](aggressive-audit.md) | 236 | Reliability audit and remediation across five patterns: idempotency, deduplication, caching, rate limiting, atomic operations. Every finding must carry a provable failure narrative. |
 | [`refactor.md`](refactor.md) | 205 | Finishing pass that takes a project from "works" to "shippable" — dead code, legacy paths, duplication, repo hygiene, dependencies, then release-grade quality on what survives. |
 | [`bugfix.md`](bugfix.md) | 186 | Extreme bug hunt — 100% file coverage with a durable `.bug-hunt/` state directory so the audit survives context compaction, plus a baseline-first fix and verify protocol. |
-| [`Master-UI.md`](Master-UI.md) | 272 | Bootstrap prompt for high-craft, motion-heavy UI builds: lean skill stack, mandatory project brief, five named aesthetic directions, a motion playbook, and gated workflow phases. |
-| [`DEVbrain-project-prompt`](DEVbrain-project-prompt) | 91 | Pre-project prompt wiring a session to a persistent `devbrain/` knowledge folder — what to read when, and rules of engagement. No `.md` extension; paste it or save it as `CLAUDE.md`. |
+| [`master-ui.md`](master-ui.md) | 272 | Bootstrap prompt for high-craft, motion-heavy UI builds: lean skill stack, mandatory project brief, five named aesthetic directions, a motion playbook, and gated workflow phases. |
+| [`devbrain-hook.md`](devbrain-hook.md) | 91 | Pre-project prompt wiring a session to a persistent `devbrain/` knowledge folder — what to read when, and rules of engagement. Paste it, or save it as `CLAUDE.md`. |
 | [`openAI/`](openAI/) | — | All seven of the above, ported to be harness-agnostic. `AGENTS.md` instead of `CLAUDE.md`, named role prompts instead of native subagents, inlined design layer instead of Skills, and explicit degraded-mode rules for chat-only models. |
 
 ---
@@ -35,12 +35,12 @@ for what differs.
 **Paste directly.** Open a prompt, copy the whole file, and drop it in as the
 first message of a Claude Code session at the root of the target repo.
 
-**Install as subagents.** Split `Sub-Agents.md` on its `---` boundaries into
+**Install as subagents.** Split `sub-agents.md` on its `---` boundaries into
 `.claude/agents/<name>.md` so Claude Code loads each block as a real subagent —
 then the routing table in that file (and in your global `CLAUDE.md`) decides
 which one handles a given request.
 
-**Install as a project prompt.** Save `DEVbrain-project-prompt` as `CLAUDE.md`
+**Install as a project prompt.** Save `devbrain-hook.md` as `CLAUDE.md`
 in a project root so it loads automatically every session.
 
 ## Conventions
