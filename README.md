@@ -7,6 +7,12 @@ installed as a subagent / `CLAUDE.md`.
 
 No code, no build step. Markdown only.
 
+**Two editions.** The root files target Claude Code. [`openAI/`](openAI/) holds the same
+prompts ported to run on any model — built for OpenAI (Codex CLI, GPT-5-class via API,
+ChatGPT) and compatible with Cursor, Windsurf, Aider, Copilot Agent and Gemini CLI. Same
+substance; vendor-bound scaffolding swapped. See [`openAI/README.md`](openAI/README.md)
+for what differs.
+
 ---
 
 ## Contents
@@ -20,6 +26,7 @@ No code, no build step. Markdown only.
 | [`bugfix.md`](bugfix.md) | 186 | Extreme bug hunt — 100% file coverage with a durable `.bug-hunt/` state directory so the audit survives context compaction, plus a baseline-first fix and verify protocol. |
 | [`Master-UI.md`](Master-UI.md) | 272 | Bootstrap prompt for high-craft, motion-heavy UI builds: lean skill stack, mandatory project brief, five named aesthetic directions, a motion playbook, and gated workflow phases. |
 | [`DEVbrain-project-prompt`](DEVbrain-project-prompt) | 89 | Pre-project prompt wiring a session to a persistent `claude-brain/` knowledge folder — what to read when, and rules of engagement. No `.md` extension; paste it or save it as `CLAUDE.md`. |
+| [`openAI/`](openAI/) | — | All seven of the above, ported to be harness-agnostic. `AGENTS.md` instead of `CLAUDE.md`, named role prompts instead of native subagents, inlined design layer instead of Skills, and explicit degraded-mode rules for chat-only models. |
 
 ---
 
