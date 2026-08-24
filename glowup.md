@@ -34,6 +34,29 @@ is locked and tokenized.**
 
 ---
 
+## Phase 0 — Dependency Preflight
+
+Check which optional companions are installed (look in `.claude/skills/`,
+`~/.claude/skills/`, and the agents dir for `ui-critical-inspector`). For
+any that are missing, tell the user what's absent and what it unlocks, and
+**ask before installing** — never install silently:
+
+```bash
+# Objective audit rules for Phase 3 (Vercel, fetched fresh at runtime)
+npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+
+# /taste design-DNA extractor for Phase 1 (needs Playwright MCP)
+git clone https://github.com/senlindesign/taste-skill ~/.claude/skills/taste
+```
+
+If the user declines or offline, proceed — every phase degrades gracefully
+without them. Record what's available in PROGRESS.md so later phases don't
+re-check. Required non-negotiables: git repo present, and the
+ui-critical-inspector agent + ui-ux-pro + one polish skill installed
+(if any of THOSE are missing, stop and tell the user).
+
+---
+
 ## Phase 1 — Design Direction (the taste layer)
 
 Interview the user briefly (max 4 questions, offer defaults):
