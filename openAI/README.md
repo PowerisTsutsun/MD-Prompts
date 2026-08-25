@@ -18,7 +18,7 @@ Substance is unchanged. Only the vendor-bound scaffolding was replaced.
 | [`aggressive-audit.md`](aggressive-audit.md) | `../aggressive-audit.md` | Reliability audit. Portability header explaining why Phase 0 recon is load-bearing without shell access. |
 | [`refactor.md`](refactor.md) | `../refactor.md` | Finishing pass. Portability header + instruction-file lookup that isn't Claude-specific. |
 | [`bugfix.md`](bugfix.md) | `../bugfix.md` | Bug hunt. `Task tool` subagents → generic parallel-worker wording with a serial fallback. Instruction-file lookup now leads with `AGENTS.md`. |
-| [`master-ui.md`](master-ui.md) | `../master-ui.md` | **Heaviest port.** Two Anthropic Skills replaced by inline design layer + a new Appendix A audit checklist; MCP setup for Codex/Cursor plus a no-MCP Playwright script fallback; Part 0 loading table. |
+| [`master-ui.md`](master-ui.md) | `../skills/ui-craft-build/` | **Heaviest port.** Two Anthropic Skills replaced by inline design layer + a new Appendix A audit checklist; MCP setup for Codex/Cursor plus a no-MCP Playwright script fallback; Part 0 loading table. |
 | [`devbrain-hook.md`](devbrain-hook.md) | `../devbrain-hook.md` | `CLAUDE.md` → `AGENTS.md`, and per-harness loading for Codex / Cursor / Aider / API / ChatGPT Projects / plain chat. |
 
 ---

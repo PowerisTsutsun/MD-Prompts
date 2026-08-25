@@ -5,7 +5,9 @@ complete operating procedure for one kind of engineering work — audits, bug
 hunts, cleanup passes, UI builds — written to be pasted into a session or
 installed as a subagent / `CLAUDE.md`.
 
-No code, no build step. Markdown only.
+The UI procedures live in [`skills/`](skills/) as installable Claude Code
+skills, so they load on their own when a request matches instead of being
+pasted. Everything else is paste-in Markdown.
 
 **Two editions.** The root files target Claude Code. [`openAI/`](openAI/) holds the same
 prompts ported to run on any model — built for OpenAI (Codex CLI, GPT-5-class via API,
@@ -24,9 +26,9 @@ for what differs.
 | [`aggressive-audit.md`](aggressive-audit.md) | 236 | Reliability audit and remediation across five patterns: idempotency, deduplication, caching, rate limiting, atomic operations. Every finding must carry a provable failure narrative. |
 | [`refactor.md`](refactor.md) | 205 | Finishing pass that takes a project from "works" to "shippable" — dead code, legacy paths, duplication, repo hygiene, dependencies, then release-grade quality on what survives. |
 | [`bugfix.md`](bugfix.md) | 186 | Extreme bug hunt — 100% file coverage with a durable `.bug-hunt/` state directory so the audit survives context compaction, plus a baseline-first fix and verify protocol. |
-| [`master-ui.md`](master-ui.md) | 272 | Bootstrap prompt for high-craft, motion-heavy UI builds: lean skill stack, mandatory project brief, five named aesthetic directions, a motion playbook, and gated workflow phases. |
+| [`skills/`](skills/) | — | Four installable Claude Code skills, split by scope of change: [`project-kickoff`](skills/project-kickoff/) (new project — classify across five build types, stack defaults, per-category guardrails, DESIGN.md gate), [`ui-craft-build`](skills/ui-craft-build/) (new surface — brief, one aesthetic direction, tokens, gated build with motion), [`ui-site-glowup`](skills/ui-site-glowup/) (whole-site overhaul — direction, token retrofit, page-by-page loop, exit audit), [`ui-polish-pass`](skills/ui-polish-pass/) (one named defect — measure, fix the token, sweep every consumer). Supersedes the old `master-ui.md` and `glowup.md`. |
 | [`devbrain-hook.md`](devbrain-hook.md) | 91 | Pre-project prompt wiring a session to a persistent `devbrain/` knowledge folder — what to read when, and rules of engagement. Paste it, or save it as `CLAUDE.md`. |
-| [`openAI/`](openAI/) | — | All seven of the above, ported to be harness-agnostic. `AGENTS.md` instead of `CLAUDE.md`, named role prompts instead of native subagents, inlined design layer instead of Skills, and explicit degraded-mode rules for chat-only models. |
+| [`openAI/`](openAI/) | — | The six root prompts plus the UI build procedure, ported to be harness-agnostic. `AGENTS.md` instead of `CLAUDE.md`, named role prompts instead of native subagents, inlined design layer instead of Skills, and explicit degraded-mode rules for chat-only models. |
 
 ---
 
@@ -42,6 +44,11 @@ which one handles a given request.
 
 **Install as a project prompt.** Save `devbrain-hook.md` as `CLAUDE.md`
 in a project root so it loads automatically every session.
+
+**Install as skills.** Copy the directories in [`skills/`](skills/) into
+`~/.claude/skills/` (user-wide) or `.claude/skills/` (per project) and restart
+Claude Code — they then load on their own when a request matches, instead of
+being pasted. See [`skills/README.md`](skills/README.md).
 
 ## Conventions
 
