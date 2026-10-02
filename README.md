@@ -21,7 +21,8 @@ for what differs.
 
 | File | Lines | What it does |
 |---|---|---|
-| [`sub-agents.md`](sub-agents.md) | 1396 | Fifteen exhaustive-mode subagent definitions (audit, security, reliability, debug, check, test, refactor, perf, deps, migration, docs, ui, api-contract, env, release) plus the routing table and universal rules that govern them. |
+| [`install-team-agents.md`](install-team-agents.md) | — | One-file installer: paste into Claude Code and it writes the 16 `sub-agents.md` agents to `~/.claude/agents/` plus a `/<name>` slash command for each (`/audit-agent`, `/ui-agent`, ...), with the `taste` skill and UI benchmarks `ui-agent` needs. Built by `npm run agents:bundle` in RcDevDash/v2 from `Prompts/_team-agents/`. |
+| [`sub-agents.md`](sub-agents.md) | 9508 | Sixteen exhaustive-mode subagent definitions (audit, security, reliability, debug, check, test, refactor, perf, deps, migration, docs, ui, compliance, api-contract, env, release), all fix-by-default with cited standards and exact HUMAN-GATE lists, plus the routing table and universal rules that govern them. |
 | [`security-audit.md`](security-audit.md) | 340 | Full security audit and hardening pass — 12 sections from exposed secrets through DoS, with an aggressive autofix policy and a hard stage-only boundary for irreversible actions. |
 | [`aggressive-audit.md`](aggressive-audit.md) | 236 | Reliability audit and remediation across five patterns: idempotency, deduplication, caching, rate limiting, atomic operations. Every finding must carry a provable failure narrative. |
 | [`refactor.md`](refactor.md) | 205 | Finishing pass that takes a project from "works" to "shippable" — dead code, legacy paths, duplication, repo hygiene, dependencies, then release-grade quality on what survives. |
