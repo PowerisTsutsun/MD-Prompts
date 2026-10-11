@@ -21,8 +21,10 @@ for what differs.
 
 | File | Lines | What it does |
 |---|---|---|
-| [`install-team-agents.md`](install-team-agents.md) | — | One-file installer: paste into Claude Code and it writes the 16 `sub-agents.md` agents to `~/.claude/agents/` plus a `/<name>` slash command for each (`/audit-agent`, `/ui-agent`, ...), with the `taste` skill and UI benchmarks `ui-agent` needs. Built by `npm run agents:bundle` in RcDevDash/v2 from `Prompts/_team-agents/`. |
-| [`sub-agents.md`](sub-agents.md) | 9508 | Sixteen exhaustive-mode subagent definitions (audit, security, reliability, debug, check, test, refactor, perf, deps, migration, docs, ui, compliance, api-contract, env, release), all fix-by-default with cited standards and exact HUMAN-GATE lists, plus the routing table and universal rules that govern them. |
+| [`install-team-agents.md`](install-team-agents.md) | — | One-file installer: paste into Claude Code and it writes the 17 v2 agents to `~/.claude/agents/`, a `/<name>` slash command for each (`/audit-agent`, `/ui-agent`, `/manager-agent`, ...), the Stop-hook gate `~/.claude/hooks/agent-gate.mjs`, the shared rules and ownership matrix under `~/.claude/references/team-agents/`, and the `taste` skill plus UI benchmarks `ui-agent` needs. Built by `npm run agents:bundle` in RcDevDash/v2 from `Prompts/_team-agents/`. |
+| [`sub-agents.md`](sub-agents.md) | 21364 | Seventeen fix-by-default subagents (v2): the sixteen specialists plus `manager-agent`, which grades a run from the working tree and re-runs the agent with the misses. Shared Universal rules, a 25-row ownership matrix (one fixer per concern), a Definition of Done and scope ratio per agent, a gate hook that blocks an unfinished report, and runnable "Manager re-checks". Rebuilt by `node tools/build-sub-agents.mjs`. |
+| [`agents-research.md`](agents-research.md) | — | The research behind v2: why `ui-agent` fixed only dark mode on a real project, the patterns that made all sixteen agents stop short, what the Claude Code harness supports, how to measure an agent instead of trusting it, and the v2 design. |
+| [`tools/`](tools/) | — | `build-sub-agents.mjs`: regenerates `sub-agents.md` from the installed agents. |
 | [`security-audit.md`](security-audit.md) | 340 | Full security audit and hardening pass — 12 sections from exposed secrets through DoS, with an aggressive autofix policy and a hard stage-only boundary for irreversible actions. |
 | [`aggressive-audit.md`](aggressive-audit.md) | 236 | Reliability audit and remediation across five patterns: idempotency, deduplication, caching, rate limiting, atomic operations. Every finding must carry a provable failure narrative. |
 | [`refactor.md`](refactor.md) | 205 | Finishing pass that takes a project from "works" to "shippable" — dead code, legacy paths, duplication, repo hygiene, dependencies, then release-grade quality on what survives. |
@@ -41,7 +43,7 @@ for what differs.
 **Paste directly.** Open a prompt, copy the whole file, and drop it in as the
 first message of a Claude Code session at the root of the target repo.
 
-**Install as subagents.** Split `sub-agents.md` on its `---` boundaries into
+**Install as subagents.** Paste `install-team-agents.md` into Claude Code (it writes every file, including the gate hook). Or split `sub-agents.md` on its `---` boundaries into
 `.claude/agents/<name>.md` so Claude Code loads each block as a real subagent —
 then the routing table in that file (and in your global `CLAUDE.md`) decides
 which one handles a given request.
